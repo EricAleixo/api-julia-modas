@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
-    "vercel-build":"npx prisma migrate deploy",
+    "vercel-build":"prisma generate npx prisma migrate deploy",
     "dev": "ts-node src/index.ts"
   },
   "keywords": [],
