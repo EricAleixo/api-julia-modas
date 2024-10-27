@@ -120,5 +120,5 @@ app.delete("/client/:id", async (req: Request, res: Response)=>{
 
 })
 
-const porta: Number = 3000
+const porta = process.env.PORT || 3000
 app.listen(porta, () => console.log(`API no ar em 'https://localhost:${porta}'`))
