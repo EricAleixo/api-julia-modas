@@ -46,7 +46,7 @@ app.post("/client", async (req: Request, res: Response) => {
                 email: email,
                 senha: senha,
                 vip: vip,
-                total_compras: totalCompras
+                totalCompras: totalCompras
             }
         })
         res.status(201).json({
@@ -78,7 +78,7 @@ app.put("/client/:id", async (req: Request, res: Response) => {
                 email: email,
                 senha: senha,
                 vip: vip,
-                total_compras: totalCompras
+                totalCompras: totalCompras
             }
         })
         res.status(201).json({
