@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import { PrismaClient } from "@prisma/client"
-import cors, {CorsOptions} from "cors"
+import cors from "cors"
 
 const app = express()
 const prisma = new PrismaClient()
@@ -9,15 +9,8 @@ const porta = process.env.PORT ?? 3000
 app.use(express.json())
 app.use(cors())
 
-const urlAutorizadas = ["https://api-julia-modas.vercel.app/", "https://api-julia-modas.vercel.app/client", "http://localhost:3000"]
-const corsOptions: CorsOptions = {
-    origin: (origin:string | undefined, callback: (err: Error | null, allow?: boolean)=> void) =>{
-        if(!origin || urlAutorizadas.includes(origin)){
-            callback(null, true)
-        }else{
-            callback(new Error("Não é permitido pelo CORS"))
-        }
-    },
+const corsOptions = {
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'], 
   };
