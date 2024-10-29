@@ -9,7 +9,7 @@ const porta = process.env.PORT ?? 3000
 app.use(express.json())
 app.use(cors())
 
-const urlAutorizadas = ["https://julia-modas.vercel.app/conta", "http://localhost:3000", "https://julia-modas.vercel.app/"]
+const urlAutorizadas = ["*"]
 const corsOptions: CorsOptions = {
     origin: (origin:string | undefined, callback: (err: Error | null, allow?: boolean)=> void) =>{
         if(!origin || urlAutorizadas.includes(origin)){
