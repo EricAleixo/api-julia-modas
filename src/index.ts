@@ -9,7 +9,7 @@ const porta = process.env.PORT ?? 3000
 app.use(express.json())
 app.use(cors())
 
-const urlAutorizadas = ["*"]
+const urlAutorizadas = ["https://api-julia-modas.vercel.app/", "https://api-julia-modas.vercel.app/client"]
 const corsOptions: CorsOptions = {
     origin: (origin:string | undefined, callback: (err: Error | null, allow?: boolean)=> void) =>{
         if(!origin || urlAutorizadas.includes(origin)){
