@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express"
 import { PrismaClient } from "@prisma/client"
+import bcrypt from "bcrypt"
 import cors from "cors"
 
 const app = express()
@@ -40,11 +41,33 @@ app.post("/client", async (req: Request, res: Response) => {
 
     try {
         const { nome, email, senha, vip, totalCompras } = req.body
+
+        if(!nome){
+            res.status(400).json({
+                msg: "O nome não foi cadastrado"
+            })
+            return
+        }
+        if(!email){
+            res.status(400).json({
+                msg: "O email não foi cadastrado"
+            })
+            return
+        }
+        if(!senha){
+            res.status(400).json({
+                msg: "A senha não foi cadastrada"
+            })
+            return
+        }
+
+        const sal = 10
+        const senhaCriptografada = await bcrypt.hash(senha, sal)
         await prisma.clients.create({
             data: {
                 nome: nome,
                 email: email,
-                senha: senha,
+                senha: senhaCriptografada,
                 vip: vip,
                 total_compras: totalCompras
             }
