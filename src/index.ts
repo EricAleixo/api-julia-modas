@@ -1,6 +1,7 @@
-import express, { Request, Response } from "express"
+import express, { Request, Response, NextFunction } from "express"
 import { PrismaClient } from "@prisma/client"
 import bcrypt, { compare } from "bcrypt"
+import jwt from "jsonwebtoken"
 import cors from "cors"
 
 const app = express()
@@ -36,6 +37,56 @@ app.get("/client", async (req: Request, res: Response) => {
         await prisma.$disconnect()
     }
 
+})
+
+//Rota privada
+
+const verificarToken = (req: Request, res: Response, next:NextFunction) =>{
+
+    const authHeader = req.headers["authorization"]
+    const token:string = authHeader?.split(" ")[1] as string
+
+    if(!token){
+        res.status(401).json({
+            msg: "Acesso negado"
+        })
+    }
+
+    try{
+
+        const secret:string = process.env.SECRET as string
+
+        jwt.verify(token, secret)
+
+        next()
+
+    }catch(error){
+        res.status(400).json({msg:"Token inválido"})
+    }
+
+}
+
+app.get("/client/:id", verificarToken ,async(req: Request, res: Response)=>{
+
+    const id = Number(req.params.id)
+
+    const cliente = await prisma.clients.findMany({
+        where: {
+            id: id
+        },
+        select: {
+            nome: true,
+            email: true,
+            vip: true,
+            total_compras: true,
+            data_criacao: true
+        }
+    })
+
+    res.status(200).json({
+        msg:"Usuário encontrado",
+        query: cliente
+    })
 })
 
 //Rota de criação
@@ -116,10 +167,19 @@ app.post("/auth/client", async (req: Request, res: Response) => {
             })
             return
         }
+
+        const secret:string = process.env.SECRET as string
+
+        const token = jwt.sign(
+            {
+                id: cliente.id
+            },
+            secret
+        )
         
         res.status(200).json({
-            msg: "Usuário encontrado",
-            query: cliente
+            msg: "Usuário autenticado",
+            query: token
         })
 
     } catch (error) {
