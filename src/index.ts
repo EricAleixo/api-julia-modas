@@ -12,9 +12,9 @@ app.use(cors())
 const corsOptions = {
     origin: '',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'], 
-  };
-  
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 app.use(cors(corsOptions))
 
 app.get("/client", async (req: Request, res: Response) => {
@@ -62,6 +62,50 @@ app.post("/client", async (req: Request, res: Response) => {
     }
 
 })
+
+app.post("/auth/client", async (req: Request, res: Response) => {
+
+    try {
+        
+        const { email, senha } = req.body
+
+        const cliente = await prisma.clients.findUnique({
+            where:{
+                email: email
+            }
+        })
+
+        if(cliente === null){
+            res.status(404).json({
+                msg: "Usuário não encontrado"
+            })
+            return
+        }
+
+        if(senha !== cliente?.senha){
+            res.status(404).json({
+                msg: "Senha incorreta"
+            })
+            return
+        }
+        
+        res.status(200).json({
+            msg: "Usuário encontrado",
+            query: cliente
+        })
+
+    } catch (error) {
+        res.status(404).json({
+            "mensagem": "Erro ao realizar a consulta.",
+            "query": error
+        })
+    } finally{
+        prisma.$disconnect()
+    }
+
+})
+
+
 app.put("/client/:id", async (req: Request, res: Response) => {
 
     try {
@@ -73,8 +117,8 @@ app.put("/client/:id", async (req: Request, res: Response) => {
                 id: idUser
             }
         })
-        
-        const {nome, email, senha, vip, totalCompras } = req.body
+
+        const { nome, email, senha, vip, totalCompras } = req.body
         await prisma.clients.update({
             where: {
                 id: idUser
@@ -101,21 +145,21 @@ app.put("/client/:id", async (req: Request, res: Response) => {
 
 })
 
-app.delete("/client/:id", async (req: Request, res: Response)=>{
+app.delete("/client/:id", async (req: Request, res: Response) => {
 
-    try{
+    try {
 
         const idQuery = req.params.id
         const idUser = Number(idQuery)
 
         const nome = await prisma.clients.findUnique({
-            where:{
+            where: {
                 id: idUser
             }
         })
 
         await prisma.clients.delete({
-            where:{
+            where: {
                 id: idUser
             }
         })
