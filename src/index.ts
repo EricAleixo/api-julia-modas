@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express"
 import { PrismaClient } from "@prisma/client"
-import bcrypt from "bcrypt"
+import bcrypt, { compare } from "bcrypt"
 import cors from "cors"
 
 const app = express()
@@ -18,6 +18,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+//Rota de exibir
 app.get("/client", async (req: Request, res: Response) => {
 
     try {
@@ -37,6 +38,7 @@ app.get("/client", async (req: Request, res: Response) => {
 
 })
 
+//Rota de criação
 app.post("/client", async (req: Request, res: Response) => {
 
     try {
@@ -86,6 +88,7 @@ app.post("/client", async (req: Request, res: Response) => {
 
 })
 
+//Rota de autenticação
 app.post("/auth/client", async (req: Request, res: Response) => {
 
     try {
@@ -105,7 +108,9 @@ app.post("/auth/client", async (req: Request, res: Response) => {
             return
         }
 
-        if(senha !== cliente?.senha){
+        const compararSenha = await compare(senha, cliente?.senha)
+
+        if(!compararSenha){
             res.status(404).json({
                 msg: "Senha incorreta"
             })
@@ -128,7 +133,7 @@ app.post("/auth/client", async (req: Request, res: Response) => {
 
 })
 
-
+//Rota de atualização
 app.put("/client/:id", async (req: Request, res: Response) => {
 
     try {
@@ -168,6 +173,7 @@ app.put("/client/:id", async (req: Request, res: Response) => {
 
 })
 
+//Rota de deletar
 app.delete("/client/:id", async (req: Request, res: Response) => {
 
     try {
