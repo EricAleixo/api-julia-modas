@@ -4,7 +4,7 @@ import cors from "cors"
 
 const app = express()
 const prisma = new PrismaClient()
-const porta = process.env.PORT ?? 3000
+const porta = process.env.PORT ?? 3004
 
 app.use(express.json())
 app.use(cors())
@@ -67,6 +67,12 @@ app.put("/client/:id", async (req: Request, res: Response) => {
     try {
         const idQuery = req.params.id
         const idUser = Number(idQuery)
+
+        const nomeAntigo = await prisma.clients.findUnique({
+            where: {
+                id: idUser
+            }
+        })
         
         const {nome, email, senha, vip, totalCompras } = req.body
         await prisma.clients.update({
@@ -82,7 +88,7 @@ app.put("/client/:id", async (req: Request, res: Response) => {
             }
         })
         res.status(201).json({
-            "mensagem": `Usuário "${nome}" atualizado com sucesso!`
+            "mensagem": `Usuário "${nomeAntigo?.nome}" atualizado com sucesso!`
         })
     } catch (error) {
         res.status(400).json({
