@@ -184,8 +184,7 @@ app.post("/auth/client", async (req: Request, res: Response) => {
 
     } catch (error) {
         res.status(404).json({
-            "mensagem": "Erro ao realizar a consulta.",
-            "query": error
+            "mensagem": error
         })
     } finally{
         prisma.$disconnect()
