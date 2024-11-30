@@ -16,3 +16,12 @@ model clients {
   total_compras Decimal?  @default(0) @db.Decimal(10, 2)
   data_criacao  DateTime? @default(now()) @db.Timestamp(6)
 }
+
+model produtos {
+  id         Int     @id @default(autoincrement())
+  imagemURL     String
+  nome       String
+  preco      Decimal @db.Decimal
+  fornecedor String
+  desconto   Int?
+}
