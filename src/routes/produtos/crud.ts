@@ -61,7 +61,7 @@ rotas.post("/adicionarprodutos", async (req: Request, res: Response) => {
       data: {
         imagemURL: imagemURL,
         nome: nome,
-        preco: preco,
+        preco: Number(preco.tofixed(2)),
         fornecedor: fornecedor,
         desconto: desconto,
       },
